@@ -2,5 +2,6 @@
 <ivy-module version="2.0">
   <info organisation="com.nullprogram" module="sample-lwjgl-project"/>
   <dependencies>
+    <dependency org="com.nullprogram" name="native-guide" rev="0.2"/>
   </dependencies>
 </ivy-module>

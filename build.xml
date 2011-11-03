@@ -22,7 +22,6 @@
   <!-- LWJGL info -->
   <property name="lwjgl.version" value="2.8.1"/>
   <property name="lwjgl.url" value="http://downloads.sourceforge.net/project/java-game-lib/Official%20Releases/LWJGL%20${lwjgl.version}/lwjgl-${lwjgl.version}.zip"/>
-  <property name="guide.url" value="http://cloud.github.com/downloads/skeeto/NativeGuide/NativeGuide-0.1.jar"/>
 
   <!-- Project classpath -->
   <path id="build.classpath">
@@ -60,10 +59,6 @@
       </patternset>
       <cutdirsmapper dirs="2"/>
     </unzip>
-    <!-- Also grab NativeGuide -->
-    <get src="${guide.url}" dest="${cache.dir}"
-	 verbose="true" skipexisting="true"/>
-    <copy file="${cache.dir}/NativeGuide-0.1.jar" todir="${lib.dir}"/>
   </target>
 
   <target name="compile" depends="init,resolve"
