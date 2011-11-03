@@ -3,6 +3,7 @@ package sample.java.project;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.opengl.GL11;
 
 /**
  * The main class.
@@ -13,13 +14,40 @@ import org.lwjgl.opengl.DisplayMode;
 public class SampleLWJGLProject implements Runnable {
 
     /** The delay between frames. */
-    private static final long DELAY = 16L;
+    private static final int FPS = 30;
 
     /** Width of the display. */
     private static final int WIDTH = 800;
 
     /** Height of the display. */
     private static final int HEIGHT = 600;
+
+    /** The length of one second in milliseconds. */
+    private static final double SECOND = 1000d;
+
+    /** The size of the quad. */
+    private static final float QUAD_SIZE = 200;
+
+    /** Rate of red oscillation. */
+    private static final float RED_RATE = 1f;
+
+    /** Rate of green oscillation. */
+    private static final float GREEN_RATE = 2.2f;
+
+    /** Rate of blue oscillation. */
+    private static final float BLUE_RATE = 0.125f;
+
+    /** Rate of rotation oscillation. */
+    private static final float ROT_RATE = 4f;
+
+    /** Range of rotation oscillation. */
+    private static final float ROT_RANGE = 12;
+
+    /** Height division for quad. */
+    private static final float HDIV = 4;
+
+    /** Width division for quad. */
+    private static final float WDIV = 2;
 
     /**
      * The main class.
@@ -29,59 +57,71 @@ public class SampleLWJGLProject implements Runnable {
      * @param args application input arguments
      */
     public static void main(final String[] args) {
+        try {
+            com.nullprogram.lwjgl.Lwjgl.setup();
+        } catch (java.io.IOException e) {
+            System.out.println("error: could not prepare libraries: " + e);
+            System.exit(0);
+        }
         new SampleLWJGLProject().run();
     }
 
     @Override
     public final void run() {
         try {
-            com.nullprogram.lwjgl.Lwjgl.setup();
             Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT));
             Display.create();
-        } catch (java.io.IOException e) {
-            System.out.println("error: could not prepare libraries: " + e);
-            System.exit(0);
+            init();
         } catch (LWJGLException e) {
             System.out.println("error: could not prepare display: " + e);
-            System.exit(0);
+            return;
         }
+
         while (!Display.isCloseRequested()) {
             repaint();
             Display.update();
+            Display.sync(FPS);
         }
         Display.destroy();
+    }
+
+    /**
+     * Initial display configuration.
+     */
+    private void init() {
+        GL11.glMatrixMode(GL11.GL_PROJECTION);
+        GL11.glLoadIdentity();
+        GL11.glOrtho(0, WIDTH, HEIGHT, 0, 1, -1);
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
     }
 
     /**
      * Draw the OpenGL display.
      */
     private void repaint() {
+        double time = System.currentTimeMillis() / SECOND;
 
-    }
+        /* Clear the screen and depth buffer */
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
-    /**
-     * Sleep the current thread for a given interval.
-     * @param ms  the number of milliseconds to sleep
-     */
-    private void sleep(final long ms) {
-        try {
-            Thread.sleep(DELAY);
-        } catch (Exception e) {
-            return;
-        }
-    }
+        /* set the color of the quad (R,G,B,A) */
+        float red = (float) Math.abs(Math.sin(time * RED_RATE));
+        float green = (float) Math.abs(Math.cos(time * GREEN_RATE));
+        float blue = (float) Math.abs(Math.tan(time * BLUE_RATE));
+        GL11.glColor3f(red, green, blue);
 
-    /**
-     * Add two integers together.
-     *
-     * This is a dumb method that is here for the purposed of unit
-     * testing.
-     *
-     * @param  a first number
-     * @param  b second number
-     * @return sum of the numbers
-     */
-    public final int add(final int a, final int b) {
-        return a + b;
+        /* draw quad */
+        GL11.glPushMatrix();
+        float r = (float) (Math.sin(time * ROT_RATE) * ROT_RANGE + ROT_RANGE);
+        GL11.glRotatef(r, 0f, 0f, 1f);
+
+        GL11.glBegin(GL11.GL_QUADS);
+        GL11.glVertex2f(WIDTH / WDIV, HEIGHT / HDIV);
+        GL11.glVertex2f(WIDTH / WDIV + QUAD_SIZE, HEIGHT / HDIV);
+        GL11.glVertex2f(WIDTH / WDIV + QUAD_SIZE, HEIGHT / HDIV + QUAD_SIZE);
+        GL11.glVertex2f(WIDTH / WDIV, HEIGHT / HDIV + QUAD_SIZE);
+        GL11.glEnd();
+
+        GL11.glPopMatrix();
     }
 }
