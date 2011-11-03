@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="SampleJavaProject" default="jar"
+<project name="SampleLWJGLProject" default="jar"
 	 xmlns:ivy="antlib:org.apache.ivy.ant">
 
   <!-- Project-specific configuration -->
@@ -17,6 +17,12 @@
   <property name="test.classes.dir" value="${build.dir}/test"/>
   <property name="dist.dir" value="dist"/>
   <property name="lib.dir" value="lib"/>
+  <property name="cache.dir" value=".cache"/>
+
+  <!-- LWJGL info -->
+  <property name="lwjgl.version" value="2.8.1"/>
+  <property name="lwjgl.url" value="http://downloads.sourceforge.net/project/java-game-lib/Official%20Releases/LWJGL%20${lwjgl.version}/lwjgl-${lwjgl.version}.zip"/>
+  <property name="guide.url" value="http://cloud.github.com/downloads/skeeto/NativeGuide/NativeGuide-0.1.jar"/>
 
   <!-- Project classpath -->
   <path id="build.classpath">
@@ -36,6 +42,28 @@
   <target name="resolve" unless="lib.present"
 	  description="Retrieve dependencies with ivy.">
     <ivy:retrieve type="jar,bundle"/>
+    <!-- Fetch LWJGL, because Ivy cannot. -->
+    <mkdir dir="${cache.dir}"/>
+    <get src="${lwjgl.url}" dest="${cache.dir}"
+	 verbose="true" skipexisting="true"/>
+    <unzip src="${cache.dir}/lwjgl-${lwjgl.version}.zip"
+	   dest="${build.classes.dir}">
+      <patternset>
+	<include name="*/native/**/*"/>
+      </patternset>
+      <cutdirsmapper dirs="1"/>
+    </unzip>
+    <unzip src="${cache.dir}/lwjgl-${lwjgl.version}.zip"
+	   dest="${lib.dir}">
+      <patternset>
+	<include name="*/jar/*.jar"/>
+      </patternset>
+      <cutdirsmapper dirs="2"/>
+    </unzip>
+    <!-- Also grab NativeGuide -->
+    <get src="${guide.url}" dest="${cache.dir}"
+	 verbose="true" skipexisting="true"/>
+    <copy file="${cache.dir}/NativeGuide-0.1.jar" todir="${lib.dir}"/>
   </target>
 
   <target name="compile" depends="init,resolve"

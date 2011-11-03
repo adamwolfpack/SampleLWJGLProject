@@ -2,3 +2,5 @@ build
 dist
 lib
 cache.properties
+.cache
+hs_err_*
