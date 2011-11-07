@@ -28,8 +28,11 @@ public class SampleLWJGLProject implements Runnable {
     /** The length of one second in milliseconds. */
     private static final double SECOND = 1000d;
 
+    /** Rate of rotation. */
+    private static final float ROTS_RATE = 100f;
+
     /** Rate of rotation oscillation. */
-    private static final float ROT_RATE = 4f;
+    private static final float ROTR_RATE = 4f;
 
     /** Range of rotation oscillation. */
     private static final float ROT_RANGE = 36;
@@ -141,8 +144,10 @@ public class SampleLWJGLProject implements Runnable {
 
         double time = System.currentTimeMillis() / SECOND;
         GL11.glPushMatrix();
-        float r = (float) (Math.sin(time * ROT_RATE) * ROT_RANGE + ROT_RANGE);
+        float r = (float) (Math.sin(time * ROTR_RATE) * ROT_RANGE + ROT_RANGE);
         GL11.glRotatef(r, 0f, 0f, 1f);
+        float s = (float) (time * ROTS_RATE % 360);
+        GL11.glRotatef(s, 1f, 0f, 0f);
 
         for (int i = 0; i < 6; i++) {
             GL11.glBegin(GL11.GL_QUADS);
