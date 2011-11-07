@@ -85,6 +85,7 @@ public class SampleLWJGLProject implements Runnable {
     public final void run() {
         try {
             Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT));
+            Display.setTitle("LWJGL Cube Demo");
             Display.create();
             init();
         } catch (LWJGLException e) {
