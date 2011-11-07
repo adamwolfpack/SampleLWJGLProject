@@ -32,7 +32,7 @@ public class SampleLWJGLProject implements Runnable {
     private static final float ROT_RATE = 4f;
 
     /** Range of rotation oscillation. */
-    private static final float ROT_RANGE = 12;
+    private static final float ROT_RANGE = 36;
 
     /* Red diffuse light. */
     float[] light_diffuse = {1f, 0f, 0f, 1f};
@@ -50,6 +50,11 @@ public class SampleLWJGLProject implements Runnable {
     };
     /* Will be filled in with X,Y,Z vertexes. */
     float[][] v = new float[8][3];
+
+    float[][] colors = {
+        {1f, 0f, 0f}, {0f, 1f, 0f}, {0f, 0f, 1f},
+        {1f, 1f, 0f}, {0f, 1f, 1f}, {1f, 0f, 1f}
+    };
 
     /**
      * The main class.
@@ -109,7 +114,7 @@ public class SampleLWJGLProject implements Runnable {
         GL11.glLight(GL11.GL_LIGHT0, GL11.GL_DIFFUSE, wrap(light_diffuse));
         GL11.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, wrap(light_position));
         GL11.glEnable(GL11.GL_LIGHT0);
-        GL11.glEnable(GL11.GL_LIGHTING);
+        //GL11.glEnable(GL11.GL_LIGHTING);
 
         /* Use depth buffering for hidden surface elimination. */
         GL11.glEnable(GL11.GL_DEPTH_TEST);
@@ -139,9 +144,9 @@ public class SampleLWJGLProject implements Runnable {
         float r = (float) (Math.sin(time * ROT_RATE) * ROT_RANGE + ROT_RANGE);
         GL11.glRotatef(r, 0f, 0f, 1f);
 
-        int i;
-        for (i = 0; i < 6; i++) {
+        for (int i = 0; i < 6; i++) {
             GL11.glBegin(GL11.GL_QUADS);
+            GL11.glColor3f(colors[i][0], colors[i][1], colors[i][2]);
             GL11.glNormal3f(n[i][0], n[i][1], n[i][2]);
             GL11.glVertex3f(v[faces[i][0]][0],
                             v[faces[i][0]][1],
