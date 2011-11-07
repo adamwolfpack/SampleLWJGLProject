@@ -37,24 +37,29 @@ public class SampleLWJGLProject implements Runnable {
     /** Range of rotation oscillation. */
     private static final float ROT_RANGE = 36;
 
-    /* Red diffuse light. */
-    float[] light_diffuse = {1f, 0f, 0f, 1f};
-    /* Infinite light location. */
-    float[] light_position = {1f, 1f, 1f, 0f};
-    /* Normals for the 6 faces of a cube. */
-    float[][] n = {
+    /** Red diffuse light. */
+    private static final float[] DIFFUSE = {1f, 0f, 0f, 1f};
+
+    /** Infinite light location. */
+    private static final float[] POSITION = {1f, 1f, 1f, 0f};
+
+    /** Normals for the 6 faces of a cube. */
+    private static final float[][] NORMALS = {
         {-1f, 0f, 0f}, {0f, 1f, 0f}, {1f, 0f, 0f},
         {0f, -1f, 0f}, {0f, 0f, 1f}, {0f, 0f, -1f}
     };
-    /* Vertex indices for the 6 faces of a cube. */
-    int[][] faces = {
+
+    /** Vertex indices for the 6 faces of a cube. */
+    private static final int[][] FACES = {
         {0, 1, 2, 3}, {3, 2, 6, 7}, {7, 6, 5, 4},
         {4, 5, 1, 0}, {5, 6, 2, 1}, {7, 4, 0, 3}
     };
-    /* Will be filled in with X,Y,Z vertexes. */
-    float[][] v = new float[8][3];
 
-    float[][] colors = {
+    /** Will be filled in with X, Y, Z vertexes. */
+    private static final float[][] V = new float[8][3];
+
+    /** Colors of the sides of the cube. */
+    private static final float[][] COLORS = {
         {1f, 0f, 0f}, {0f, 1f, 0f}, {0f, 0f, 1f},
         {1f, 1f, 0f}, {0f, 1f, 1f}, {1f, 0f, 1f}
     };
@@ -95,7 +100,12 @@ public class SampleLWJGLProject implements Runnable {
         Display.destroy();
     }
 
-    private FloatBuffer wrap(float[] in) {
+    /**
+     * Wrap a float array with a direct FloatBuffer.
+     * @param in  the float array to be wrapped
+     * @return a direct FloatBuffer
+     */
+    private FloatBuffer wrap(final float[] in) {
         FloatBuffer buffer;
         buffer = BufferUtils.createFloatBuffer(in.length * 4);
         return buffer.put(in);
@@ -106,16 +116,16 @@ public class SampleLWJGLProject implements Runnable {
      */
     private void init() {
         /* Setup cube vertex data. */
-        v[0][0] = v[1][0] = v[2][0] = v[3][0] = -1;
-        v[4][0] = v[5][0] = v[6][0] = v[7][0] = 1;
-        v[0][1] = v[1][1] = v[4][1] = v[5][1] = -1;
-        v[2][1] = v[3][1] = v[6][1] = v[7][1] = 1;
-        v[0][2] = v[3][2] = v[4][2] = v[7][2] = 1;
-        v[1][2] = v[2][2] = v[5][2] = v[6][2] = -1;
+        V[0][0] = V[1][0] = V[2][0] = V[3][0] = -1;
+        V[4][0] = V[5][0] = V[6][0] = V[7][0] = 1;
+        V[0][1] = V[1][1] = V[4][1] = V[5][1] = -1;
+        V[2][1] = V[3][1] = V[6][1] = V[7][1] = 1;
+        V[0][2] = V[3][2] = V[4][2] = V[7][2] = 1;
+        V[1][2] = V[2][2] = V[5][2] = V[6][2] = -1;
 
         /* Enable a single OpenGL light. */
-        GL11.glLight(GL11.GL_LIGHT0, GL11.GL_DIFFUSE, wrap(light_diffuse));
-        GL11.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, wrap(light_position));
+        GL11.glLight(GL11.GL_LIGHT0, GL11.GL_DIFFUSE, wrap(DIFFUSE));
+        GL11.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, wrap(POSITION));
         GL11.glEnable(GL11.GL_LIGHT0);
         //GL11.glEnable(GL11.GL_LIGHTING);
 
@@ -151,20 +161,20 @@ public class SampleLWJGLProject implements Runnable {
 
         for (int i = 0; i < 6; i++) {
             GL11.glBegin(GL11.GL_QUADS);
-            GL11.glColor3f(colors[i][0], colors[i][1], colors[i][2]);
-            GL11.glNormal3f(n[i][0], n[i][1], n[i][2]);
-            GL11.glVertex3f(v[faces[i][0]][0],
-                            v[faces[i][0]][1],
-                            v[faces[i][0]][2]);
-            GL11.glVertex3f(v[faces[i][1]][0],
-                            v[faces[i][1]][1],
-                            v[faces[i][1]][2]);
-            GL11.glVertex3f(v[faces[i][2]][0],
-                            v[faces[i][2]][1],
-                            v[faces[i][2]][2]);
-            GL11.glVertex3f(v[faces[i][3]][0],
-                            v[faces[i][3]][1],
-                            v[faces[i][3]][2]);
+            GL11.glColor3f(COLORS[i][0], COLORS[i][1], COLORS[i][2]);
+            GL11.glNormal3f(NORMALS[i][0], NORMALS[i][1], NORMALS[i][2]);
+            GL11.glVertex3f(V[FACES[i][0]][0],
+                            V[FACES[i][0]][1],
+                            V[FACES[i][0]][2]);
+            GL11.glVertex3f(V[FACES[i][1]][0],
+                            V[FACES[i][1]][1],
+                            V[FACES[i][1]][2]);
+            GL11.glVertex3f(V[FACES[i][2]][0],
+                            V[FACES[i][2]][1],
+                            V[FACES[i][2]][2]);
+            GL11.glVertex3f(V[FACES[i][3]][0],
+                            V[FACES[i][3]][1],
+                            V[FACES[i][3]][2]);
             GL11.glEnd();
         }
 
